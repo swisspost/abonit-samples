@@ -126,6 +126,9 @@ The request expects a JSON body
 | field | string | Name of the field |
 | value | string | Value of the field |
 
+For an in detailed overview of supported field names within the **address** collection visit the following link and search for ***Supported field names*** in table of contents.
+[https://developer.post.ch/en/address-web-services-rest](https://developer.post.ch/en/address-web-services-rest)
+
 ### Response
 
 The response is a JSON document structed as
