@@ -14,13 +14,11 @@ Before an address verification can begin, the customer generates a shared secret
 sequenceDiagram
     Customer->>Intrum: Retrieve public key
     activate Intrum
-    Intrum-->Customer: Public key
+    Intrum-->>Customer: Public key
     deactivate Intrum
     activate Customer
     Customer->>Customer: Create shared secret key
-    deactivate Customer
-    activate Customer
-    Customer->>Customer: Encrypt shared secret key using Intrum's public key
+    Customer->>Customer: Encrypt shared secret key
     deactivate Customer
 ```
 
