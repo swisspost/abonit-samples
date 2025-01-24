@@ -166,7 +166,7 @@ The response is a JSON document structed as
 }
 ```
 
-#### Field **creditworthinessInfo***
+#### Field **creditworthinessInfo**
 
 Contains the encrypted response (cipherText) and associated data (associatedData) provided by Intrum's API.
 
