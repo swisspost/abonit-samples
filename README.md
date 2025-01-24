@@ -61,3 +61,144 @@ sequenceDiagram
     Customer->>Customer: Decrypt creditworthiness data
     deactivate Customer
 ```
+
+## Encrypt shared secretkey and data decryption
+
+The process for creating and encrypting a shared secret key, including a reference implementation, can be found at the following [link](https://docs.mideal.io/dev/data-check-api/data-check-api-with-encrypted-result). This link also provides instructions on how to decrypt the creditworthiness data.
+
+Intrum public key URLs:
+- Test [https://sandbox-autoid.ubiid.ch/api/v1/public/credit-information/public-key](https://sandbox-autoid.ubiid.ch/api/v1/public/credit-information/public-key)
+- Production [https://autoid.ubiid.ch/api/v1/public/credit-information/public-key](https://autoid.ubiid.ch/api/v1/public/credit-information/public-key)
+
+## EIRENE REST API
+
+The EIRENE REST API is provided by the API management platform of Post and can be found searching for **Address query Webservice**
+
+EIRENE REST API by environment
+- Test [https://developer.apis-test.post.ch/ui/apis](https://developer.apis-test.post.ch/ui/apis)
+- Production [https://developer.apis.post.ch/ui/apis](https://developer.apis.post.ch/ui/apis)
+
+Refer to the **POST** endpoint with URL **/creditworthiness/queries**.
+
+### Request
+
+The request expects a JSON body
+
+```json
+{
+    "encryptedSecretKey": "ENCRYPTED_KEY",
+    "alignmentType": "QUERY_KEY",
+    "timeOutSecond": 10000,
+    "address": [
+        {
+            "field": "Prename_in",
+            "value": "Hans"
+        },
+        {
+            "field": "Name_in",
+            "value": "Muster"
+        },
+        {
+            "field": "StreetName_in",
+            "value": "Sternmatt"
+        },
+        {
+            "field": "HouseNo_in",
+            "value": "6"
+        },
+        {
+            "field": "ZIPCode_in",
+            "value": "6010"
+        },
+        {
+            "field": "TownName_in",
+            "value": "Kriens"
+        }
+    ]
+}
+```
+
+| Element | Type | Description |
+| -------- | ------- | ------- |
+| encryptedSecretKey | string | The encrypted shared secret key |
+| alignmentType | string | Key that identifies the query to be executed |
+| timeOutSecond | int | Timeout int ms |
+| field | string | Name of the field |
+| value | string | Value of the field |
+
+### Response
+
+The response is a JSON document structed as
+
+```json
+{
+    "creditworthinessInfo": {
+        "cipherText": "CIPHERTEXT",
+        "associatedData": "ASSOCIATEDDATA"
+    },
+    "settlementId": "10777557",
+    "result": [
+        {
+            "field": "Prename",
+            "value": "Hans"
+        },
+        {
+            "field": "Name",
+            "value": "Muster"
+        },
+        {
+            "field": "StreetName",
+            "value": "Sternmatt"
+        },
+        {
+            "field": "HouseNo",
+            "value": "6"
+        },
+        {
+            "field": "ZIPCode",
+            "value": "6010"
+        },
+        {
+            "field": "TownName",
+            "value": "Kriens"
+        }
+   ]
+}
+```
+
+#### Field **creditworthinessInfo***
+
+Contains the encrypted response (cipherText) and associated data (associatedData) provided by Intrum's API.
+
+Keep in mind these fields are **Base64** encoded.
+
+#### Field **settlementId**
+
+Billing identifier assigned by EIRENE.
+
+#### Field **result**
+
+Contains the individual elements of the validated address and the status of the query.
+
+#### Field **creditWorthinessInfo**
+
+Intrum queries the Credit Information module for the creditworthiness check. Based on Intrum's manual the data contained in the response:
+
+| ccsNum | ccsAlpha | Description  |
+|--------|----------|--------------|
+| 6      | A        | Very good    |
+| 5      |          |              |
+| 4      | B        | Good         |
+| 3      |          |              |
+| 2      |          |              |
+| 1      | C        | Neutral      |
+| 0      |          |              |
+| -1     |          |              |
+| -2     | D        | Bad          |
+| -3     |          |              |
+| -4     |          |              |
+| -5     | E        | Very Bad     |
+| -6     |          |              |
+|        | M        | Minor        |
+|        | X        | Not Known    |
+|        | Z        | Deceased     |
